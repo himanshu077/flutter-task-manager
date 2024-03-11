@@ -1,0 +1,6 @@
+package com.app.flutter_task_manager
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
