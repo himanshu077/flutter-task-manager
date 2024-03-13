@@ -12,6 +12,7 @@ class FormWidget extends StatelessWidget {
   final Widget child;
   final Function() onBackPress;
   final Function() onButtonPress;
+
   const FormWidget({super.key, required this.title, required this.buttonLabel, required this.child, required this.onBackPress, required this.onButtonPress});
 
   @override
@@ -31,6 +32,7 @@ class FormWidget extends StatelessWidget {
                 children: [
                   child,
                   AppButton(
+                    tapKey: Key('formSubmitButton'),
                     onTap: onButtonPress,
                     label: buttonLabel,
                     margin: const EdgeInsets.symmetric(vertical: AppFonts.s40),

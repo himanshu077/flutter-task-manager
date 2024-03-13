@@ -18,6 +18,13 @@ class TaskHomeSuccessState extends TaskState {
   @override
   List<Object> get props => [];
 }
+class TaskHomeFailureState extends TaskState {
+  final String error;
+  const TaskHomeFailureState({required this.error});
+
+  @override
+  List<Object> get props => [error];
+}
 
 //create new task states...
 class CreateTaskLoadingState extends TaskState {

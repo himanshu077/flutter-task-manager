@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 class TextView extends StatelessWidget {
   final String text;
-  final dynamic color;
-  final dynamic underlineColor;
+  final Color? color;
   final TextStyle? textStyle;
   final bool? underline;
   final bool? strikeThrough;
-  final dynamic textSize;
+  final double? textSize;
   final bool? capitalise;
   final int? maxlines;
   final TextAlign? textAlign;
@@ -30,7 +29,6 @@ class TextView extends StatelessWidget {
     this.fontWeight,
     this.lineHeight,
     this.fontStyle,
-    this.underlineColor,
     this.strikeThrough,
     this.capitalise,
     this.letterSpacing,

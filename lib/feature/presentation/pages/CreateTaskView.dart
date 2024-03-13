@@ -55,11 +55,13 @@ class _CreateTaskViewState extends State<CreateTaskView> {
             return Column(
               children: [
                 EditText(
+                  key: Key('titleCreate'),
                     hint: 'Title',
                     controller: _title,
                   error: error?.title,
                 ),
                 EditText(
+                  key: Key('dateCreate'),
                   readOnly: true,
                   hint: 'Date',
                   controller: _date,
@@ -73,6 +75,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                     }),
                 ),
                 EditText(
+                  key: Key('timeCreate'),
                   hint: 'Time',
                   readOnly: true,
                   controller: _time,
@@ -90,3 +93,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
         ));
   }
 }
+
+
+
+
