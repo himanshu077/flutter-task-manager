@@ -5,9 +5,10 @@ class TapWidget extends StatelessWidget {
   final Function()? onLongPress;
   final Widget? child;
   final double? radius;
+  final Key? tapKey;
 
   const TapWidget(
-      {super.key, this.onTap, this.onLongPress, this.child, this.radius});
+      {super.key, this.onTap, this.onLongPress, this.child, this.radius, this.tapKey});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class TapWidget extends StatelessWidget {
       child: Material(
           color: Colors.transparent,
           child: InkWell(
+            key: tapKey,
             onTap: onTap,
             onLongPress: onLongPress,
             child: child,

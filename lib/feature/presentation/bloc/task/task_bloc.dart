@@ -19,7 +19,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   FutureOr<void> _onCreateTask(CreateTaskEvent event, Emitter<TaskState> emit) async{
     emit(CreateTaskLoadingState());
-    if(event.title.isNotEmpty && event.date.isNotEmpty && event.time.isNotEmpty){
+    if(validateForm(title: event.title,date: event.date,time: event.time)){
       await Future.delayed(const Duration(seconds: 3));
       emit(CreateTaskSuccessState());
     }else{
@@ -33,7 +33,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   FutureOr<void> _onUpdateTask(UpdateTaskEvent event, Emitter<TaskState> emit) async{
     emit(UpdateTaskLoadingState());
-    if(event.title.isNotEmpty && event.date.isNotEmpty && event.time.isNotEmpty){
+    if(validateForm(title: event.title,date: event.date,time: event.time)){
       await Future.delayed(const Duration(seconds: 3));
       emit(UpdateTaskSuccessState());
     }else{
@@ -57,3 +57,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     emit(TaskHomeSuccessState());
   }
 }
+
+
+bool validateForm({String title = '',String date = '', String time = ''}) => title.isNotEmpty && date.isNotEmpty && time.isNotEmpty;
+
+

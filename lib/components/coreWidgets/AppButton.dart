@@ -17,7 +17,8 @@ class AppButton extends StatelessWidget {
   final EdgeInsets? margin;
   final bool fillWidth;
   final Widget? child;
-  const AppButton({super.key, this.label, this.onTap, this.radius, this.labelStyle, this.buttonColor, this.buttonBorderColor, this.padding, this.margin, this.fillWidth = true, this.child});
+  final Key? tapKey;
+  const AppButton({super.key, this.label, this.onTap, this.radius, this.labelStyle, this.buttonColor, this.buttonBorderColor, this.padding, this.margin, this.fillWidth = true, this.child, this.tapKey});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class AppButton extends StatelessWidget {
               ],
             ),
           ),
-          Positioned.fill(child: TapWidget(onTap: onTap,))
+          Positioned.fill(child: TapWidget(onTap: onTap,tapKey: tapKey,))
         ],
       ),
     );

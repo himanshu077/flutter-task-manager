@@ -32,6 +32,14 @@ class TextStyles {
       fontFamily: Family.regular);
 
 
+  static const TextStyle regular16Black = TextStyle(
+      color: AppColors.black,
+      fontSize: AppFonts.s16,
+      fontFamily: Family.regular);
+
+
+
+
   //medium
   static const TextStyle medium14Black = TextStyle(
       color: AppColors.black,

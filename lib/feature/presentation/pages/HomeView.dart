@@ -46,6 +46,9 @@ class _HomeViewState extends State<HomeView> {
                       context.load;
                     }else if(state is TaskHomeSuccessState){
                       context.stopLoader;
+                    }else if(state is TaskHomeFailureState){
+                      context.stopLoader;
+                      context.openFailureDialog(state.error);
                     }
                   },
                   builder: (context, state) {

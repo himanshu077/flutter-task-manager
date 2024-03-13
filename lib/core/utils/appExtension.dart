@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../components/coreWidgets/AppDialog.dart';
 import '../../components/coreWidgets/AppLoader.dart';
+import '../../components/widgets/dialog/FailureMessageDialog.dart';
 
 extension NavigatorExtn on BuildContext {
   // navigate to next screen
@@ -59,15 +61,15 @@ extension AppStateExtn on BuildContext {
 //   void openDialog(Widget child,{bool barrierDismissible = true}) => appDialog(this, child,barrierDismissible: barrierDismissible);
 
   // show popup dialog ....
-  // void openFailureDialog(String message) => appDialog(this, FailureMessageDailog(
-  //   message: message,
-  //   onTap: (){
-  //     stopLoader;
-  //   } ,
-  //   dismiss: (){
-  //     stopLoader;
-  //   },
-  // ));
+  void openFailureDialog(String message) => appDialog(this, FailureMessageDialog(
+    message: message,
+    onTap: (){
+      stopLoader;
+    } ,
+    dismiss: (){
+      stopLoader;
+    },
+  ));
 
   // show bottom sheet  ....
   // void openBottomSheet(Widget child) => appBSheet(this,child);
