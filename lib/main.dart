@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'components/constants/AppTheme.dart';
 import 'feature/presentation/bloc/task/task_bloc.dart';
 import 'feature/presentation/pages/SplashView.dart';
+import 'services/storage/storageServices.dart';
 
-void main() {
+void main() async{
+  await StorageService.create();
   runApp(const MyApp());
 }
 

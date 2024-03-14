@@ -10,32 +10,29 @@ class FetchTasksEvent extends TaskEvent{
 }
 
 class CreateTaskEvent extends TaskEvent{
-  final String title;
-  final String date;
-  final String time;
+  final TaskEntity data;
 
-  const CreateTaskEvent({required this.title, required this.date, required this.time});
+  const CreateTaskEvent({required this.data});
 
   @override
-  List<Object?> get props => [title,date, time];
+  List<Object?> get props => [data];
 }
 
 class UpdateTaskEvent extends TaskEvent{
-  final String title;
-  final String date;
-  final String time;
+  final TaskEntity data;
 
-  const UpdateTaskEvent({required this.title, required this.date, required this.time});
+  const UpdateTaskEvent( {required this.data,});
 
   @override
-  List<Object?> get props => [title,date, time];
+  List<Object?> get props => [data];
 }
 
 class RemoveTaskEvent extends TaskEvent{
-  final String id;
+  final TaskEntity data;
+  final int index;
 
-  const RemoveTaskEvent({required this.id});
+  const RemoveTaskEvent( {required this.data,required this.index,});
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [data, index];
 }
