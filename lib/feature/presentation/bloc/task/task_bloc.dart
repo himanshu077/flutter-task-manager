@@ -3,62 +3,112 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/utils/appExtension.dart';
+import '../../../../core/useCases/UseCase.dart';
+import '../../../data/repositories/TaskRepositoryImpl.dart';
+import '../../../domain/entities/TaskEntity.dart';
+import '../../../domain/useCases/createNewTask.dart';
+import '../../../domain/useCases/getAllTasks.dart';
+import '../../../domain/useCases/removeTaskUseCase.dart';
+import '../../../domain/useCases/updateTask.dart';
+
 part 'task_event.dart';
+
 part 'task_state.dart';
 
+final repo = TaskRepositoryImpl();
+
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
-  List tasks = ['','','','','','','',];
+  final GetAllTasksUseCase getAllTaskUseCase = GetAllTasksUseCase(repo);
+  final CreateNewTaskUseCase createNewTaskUseCase =
+      CreateNewTaskUseCase(repository: repo);
+  final UpdateTaskUseCase updateTaskUseCase =
+      UpdateTaskUseCase(repository: repo);
+  final RemoveTaskUseCase removeTaskUseCase =
+      RemoveTaskUseCase(repository: repo);
+
+  List<TaskEntity> tasks = [];
+
+  int updateTaskIndex = -1;
+
+  TaskEntity get taskForUpdate => tasks[updateTaskIndex];
+
   TaskBloc() : super(TaskInitial()) {
     on<TaskEvent>((event, emit) {});
     on<FetchTasksEvent>(_onFetchTask);
     on<CreateTaskEvent>(_onCreateTask);
     on<UpdateTaskEvent>(_onUpdateTask);
     on<RemoveTaskEvent>(_onRemoveTask);
-    }
+  }
 
-
-  FutureOr<void> _onCreateTask(CreateTaskEvent event, Emitter<TaskState> emit) async{
+  FutureOr<void> _onCreateTask(
+      CreateTaskEvent event, Emitter<TaskState> emit) async {
     emit(CreateTaskLoadingState());
-    if(validateForm(title: event.title,date: event.date,time: event.time)){
-      await Future.delayed(const Duration(seconds: 3));
-      emit(CreateTaskSuccessState());
-    }else{
+    if (event.data.checkIsValid) {
+      final task = event.data.copyCreateNew();
+      final result = await createNewTaskUseCase.call(task);
+      result.fold(
+          (failure) => emit(CreateTaskFailureState(error: failure.value)),
+          (data) {
+            tasks.add(task);
+            _sortTasks();
+            emit(CreateTaskSuccessState());
+          });
+    } else {
       emit(CreateTaskFormValidationState(
-          title: event.title.isNotEmpty ? '': 'Please enter task title',
-          date: event.date.isNotEmpty ? '' : 'Please select date',
-          time: event.time.isNotEmpty ? '' : 'Please select time'
-      ));
+          title: event.data.isValidTitle ? '' : 'Please enter task title',
+          date: event.data.isValidDate ? '' : 'Please select date',
+          time: event.data.isValidTime ? '' : 'Please select time'));
     }
   }
 
-  FutureOr<void> _onUpdateTask(UpdateTaskEvent event, Emitter<TaskState> emit) async{
+  FutureOr<void> _onUpdateTask(
+      UpdateTaskEvent event, Emitter<TaskState> emit) async {
     emit(UpdateTaskLoadingState());
-    if(validateForm(title: event.title,date: event.date,time: event.time)){
-      await Future.delayed(const Duration(seconds: 3));
-      emit(UpdateTaskSuccessState());
-    }else{
+    if (event.data.checkIsValid) {
+      final task = event.data.copyWith(key: updateTaskIndex);
+      final result = await updateTaskUseCase.call(task);
+      result.fold(
+          (failure) => emit(UpdateTaskFailureState(error: failure.value)),
+          (data) {
+            tasks[updateTaskIndex] = task;
+            _sortTasks();
+            emit(UpdateTaskSuccessState());
+          });
+    } else {
       emit(UpdateTaskFormValidationState(
-          title: event.title.isNotEmpty ? '': 'Please enter task title',
-          date: event.date.isNotEmpty ? '' : 'Please select date',
-          time: event.time.isNotEmpty ? '' : 'Please select time'
-      ));
+          title: event.data.isValidTitle ? '' : 'Please enter task title',
+          date: event.data.isValidDate ? '' : 'Please select date',
+          time: event.data.isValidTime ? '' : 'Please select time'));
     }
   }
 
-  FutureOr<void> _onRemoveTask(RemoveTaskEvent event, Emitter<TaskState> emit) async{
+  FutureOr<void> _onRemoveTask(
+      RemoveTaskEvent event, Emitter<TaskState> emit) async {
     emit(TaskHomeLoadingState());
-    await Future.delayed(const Duration(seconds: 3));
-    emit(TaskHomeSuccessState());
+    final result = await removeTaskUseCase.call(event.data);
+    result.fold((failure) => emit(TaskHomeFailureState(error: failure.value)),
+        (data) {
+          tasks.removeAt(event.index);
+      emit(TaskHomeSuccessState());
+    });
   }
 
-  FutureOr<void> _onFetchTask(FetchTasksEvent event, Emitter<TaskState> emit) async{
+  FutureOr<void> _onFetchTask(
+      FetchTasksEvent event, Emitter<TaskState> emit) async {
     emit(TaskHomeLoadingState());
-    await Future.delayed(const Duration(seconds: 3));
-    emit(TaskHomeSuccessState());
+    final result = await getAllTaskUseCase.call(NoParams());
+    result.fold((failure) => emit(TaskHomeFailureState(error: failure.value)),
+        (data) {
+      tasks.cast();
+      tasks.addAll(data);
+      emit(TaskHomeSuccessState());
+    });
+  }
+
+
+  void _sortTasks(){
+    tasks.sort(
+          (a, b) => a.timeStamp.compareTo(b.timeStamp),);
   }
 }
-
-
-bool validateForm({String title = '',String date = '', String time = ''}) => title.isNotEmpty && date.isNotEmpty && time.isNotEmpty;
-
-

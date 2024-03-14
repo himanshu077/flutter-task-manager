@@ -5,6 +5,7 @@ import '../../../core/utils/DateTimeUtils.dart';
 import '../../../components/constants/AppFonts.dart';
 import '../../../core/utils/appExtension.dart';
 import '../../../components/coreWidgets/EditText.dart';
+import '../../domain/entities/TaskEntity.dart';
 import '../bloc/task/task_bloc.dart';
 import '../widgets/FormWidget.dart';
 
@@ -21,10 +22,16 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
   final _date = TextEditingController();
   final _time = TextEditingController();
 
+  late TaskEntity updateTask;
+
   @override
   void initState() {
     super.initState();
     _bloc = context.read<TaskBloc>();
+    updateTask = _bloc.taskForUpdate;
+    _title.text = updateTask.title;
+    _date.text = updateTask.getDate;
+    _time.text = updateTask.getTime;
   }
 
   @override
@@ -34,9 +41,10 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
         onBackPress: context.pop,
         buttonLabel: 'Update',
         onButtonPress: () => _bloc.add(UpdateTaskEvent(
-            title: _title.text.trim(),
-            date: _date.text.trim(),
-            time: _time.text.trim())),
+            data: updateTask.copyUpdateTask(
+                date: _date.text.trim(),
+                time: _time.text.trim(),
+                title: _title.text.trim()))),
         child: BlocConsumer<TaskBloc, TaskState>(
           listener: (context, state) {
             if (state is UpdateTaskLoadingState) {
@@ -46,6 +54,7 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
               context.pop();
             } else if (state is UpdateTaskFailureState) {
               context.stopLoader;
+              context.openFailureDialog(state.error);
             } else if (state is UpdateTaskFormValidationState) {
               context.stopLoader;
             }
@@ -55,8 +64,8 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
             return Column(
               children: [
                 EditText(
-                    hint: 'Title',
-                    controller: _title,
+                  hint: 'Title',
+                  controller: _title,
                   error: error?.title,
                 ),
                 EditText(
@@ -67,7 +76,7 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
                   error: error?.date,
                   onTap: () => context.datePicker.then((value) {
                     if (value != null) {
-                      _date.text = value.ddMMMyyyy;
+                      _date.text = value.dd_MMM_yyyy;
                     }
                   }),
                 ),

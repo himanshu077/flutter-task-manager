@@ -64,7 +64,7 @@ class EditTextTheme {
 
   static InputBorder get setBorder => OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppFonts.s10),
-      borderSide: const BorderSide(color: AppColors.primaryColor, width: 2));
+      borderSide: const BorderSide(color: AppColors.grey20, width: 2));
 
   static InputBorder get setErrorBorder => OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppFonts.s10),

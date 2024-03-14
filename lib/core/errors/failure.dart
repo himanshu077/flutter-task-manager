@@ -17,3 +17,12 @@ class CacheFailure extends Failure {
   @override
   List<Object?> get props => [];
 }
+
+class ErrorFailure extends Failure {
+  final String error;
+
+  const ErrorFailure({required this.error});
+
+  @override
+  List<Object?> get props => [error];
+}
