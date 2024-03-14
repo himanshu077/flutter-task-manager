@@ -45,9 +45,6 @@ class _EditTextState extends State<EditText> {
           filled: widget.isFilled,
           fillColor: widget.filledColor ?? AppColors.transparent,
             errorText: widget.error?.trim().isEmpty ?? true ? null : widget.error
-            // errorText: widget.error != null && widget.error!.trim().isEmpty
-            //     ? null
-            //     : widget.error
         ),
         inputFormatters: widget.format,
         keyboardType: widget.inputType,

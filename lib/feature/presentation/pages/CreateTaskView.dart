@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+
 import '../../../core/utils/DateTimeUtils.dart';
 import '../../../core/utils/appExtension.dart';
 import '../../../components/constants/AppFonts.dart';
 import '../../../components/coreWidgets/EditText.dart';
+import '../../domain/entities/TaskEntity.dart';
 import '../bloc/task/task_bloc.dart';
 import '../widgets/FormWidget.dart';
 
@@ -34,9 +36,13 @@ class _CreateTaskViewState extends State<CreateTaskView> {
         onBackPress: context.pop,
         buttonLabel: 'Submit',
         onButtonPress: () => _bloc.add(CreateTaskEvent(
-            title: _title.text.trim(),
-            date: _date.text.trim(),
-            time: _time.text.trim())),
+            data: TaskEntity(
+                time: _time.text.trim(),
+                date: _date.text.trim(),
+                title: _title.text.trim(),
+              timeStamp: -1,
+                createdAt: -1
+            ))),
         child: BlocConsumer<TaskBloc, TaskState>(
           listener: (context, state) {
             if (state is CreateTaskLoadingState) {
@@ -46,6 +52,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
               context.pop();
             } else if (state is CreateTaskFailureState) {
               context.stopLoader;
+              context.openFailureDialog(state.error);
             } else if (state is CreateTaskFormValidationState) {
               context.stopLoader;
             }
@@ -70,7 +77,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                   onTap: () =>
                     context.datePicker.then((value) {
                       if (value != null) {
-                        _date.text = value.ddMMMyyyy;
+                        _date.text = value.dd_MMM_yyyy;
                       }
                     }),
                 ),
@@ -93,7 +100,3 @@ class _CreateTaskViewState extends State<CreateTaskView> {
         ));
   }
 }
-
-
-
-

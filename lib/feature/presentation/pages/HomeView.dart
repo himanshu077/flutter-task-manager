@@ -57,9 +57,13 @@ class _HomeViewState extends State<HomeView> {
                         padding: const EdgeInsets.all(AppFonts.s20),
                         itemBuilder: (context, index) =>
                             TaskListTile(
-                              onTap: () =>
-                                  context.pushNavigator(const UpdateTaskView()),
-                              onDeleteAction: ()=> _bloc.add(RemoveTaskEvent(id: 'id')),
+                              data: _bloc.tasks[index],
+                              onTap: ()
+                              {
+                                _bloc.updateTaskIndex = index;
+                                context.pushNavigator(const UpdateTaskView());
+                              },
+                              onDeleteAction: ()=> _bloc.add(RemoveTaskEvent(data: _bloc.tasks[index], index: index)),
                             ),
                         separatorBuilder: (context, index) => const Divider(),
                         itemCount: _bloc.tasks.length);
