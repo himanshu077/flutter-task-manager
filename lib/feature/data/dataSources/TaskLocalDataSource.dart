@@ -1,3 +1,4 @@
+import '../../../services/storage/storageServices.dart';
 import '../models/TaskModel.dart';
 
 abstract class TaskLocalDataSource {
@@ -5,33 +6,48 @@ abstract class TaskLocalDataSource {
 
   Future<TaskModel> createNewTask(TaskModel data);
 
-  Future<TaskModel> updateTask(TaskModel data);
+  Future<void> updateTask(TaskModel data);
 
   Future<bool> removeTask(TaskModel data);
 }
 
 class TaskLocalDataSourceImpl extends TaskLocalDataSource {
+
   @override
   Future<TaskModel> createNewTask(TaskModel data) async {
-    await Future.delayed(Duration(seconds: 3));
-    return TaskModel(title: '', time: '', date: '');
+    try {
+      final key = await StorageService.addTask(data: data);
+      return data.copyWith(key: key);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<List<TaskModel>> getAllTasks() async {
-    await Future.delayed(Duration(seconds: 3));
-    return [TaskModel(title: 'title', date: '12-03-2024', time: '8:30 AM')];
+    try {
+      return StorageService.getTaskList();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<TaskModel> updateTask(TaskModel data) async {
-    await Future.delayed(Duration(seconds: 3));
-    return TaskModel(title: '', time: '', date: '');
+  Future<void> updateTask(TaskModel data) async {
+    try {
+      return await StorageService.updateTask(data: data);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> removeTask(TaskModel data) async {
-    await Future.delayed(Duration(seconds: 3));
-    return true;
+    try {
+      await StorageService.removeTask(data: data);
+      return true;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
