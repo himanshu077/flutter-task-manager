@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_task_manager/components/coreWidgets/TextView.dart';
 
 import '../../../components/constants/AppColors.dart';
 import '../../../core/utils/appExtension.dart';
@@ -52,21 +53,26 @@ class _HomeViewState extends State<HomeView> {
                     }
                   },
                   builder: (context, state) {
-                    return ListView.separated(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.all(AppFonts.s20),
-                        itemBuilder: (context, index) =>
-                            TaskListTile(
-                              data: _bloc.tasks[index],
-                              onTap: ()
-                              {
-                                _bloc.updateTaskIndex = index;
-                                context.pushNavigator(const UpdateTaskView());
-                              },
-                              onDeleteAction: ()=> _bloc.add(RemoveTaskEvent(data: _bloc.tasks[index], index: index)),
-                            ),
-                        separatorBuilder: (context, index) => const Divider(),
-                        itemCount: _bloc.tasks.length);
+
+                    if (_bloc.tasks.isNotEmpty) {
+                      return ListView.separated(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.all(AppFonts.s20),
+                          itemBuilder: (context, index) =>
+                              TaskListTile(
+                                data: _bloc.tasks[index],
+                                onTap: ()
+                                {
+                                  _bloc.updateTaskIndex = index;
+                                  context.pushNavigator(const UpdateTaskView());
+                                },
+                                onDeleteAction: ()=> _bloc.add(RemoveTaskEvent(data: _bloc.tasks[index], index: index)),
+                              ),
+                          separatorBuilder: (context, index) => const Divider(),
+                          itemCount: _bloc.tasks.length);
+                    } else {
+                      return const Center(child: TextView(text: 'No Task found')); // Placeholder example
+                    }
                   },
                 ))
           ],

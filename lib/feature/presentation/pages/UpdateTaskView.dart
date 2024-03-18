@@ -28,10 +28,14 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
   void initState() {
     super.initState();
     _bloc = context.read<TaskBloc>();
-    updateTask = _bloc.taskForUpdate;
-    _title.text = updateTask.title;
-    _date.text = updateTask.getDate;
-    _time.text = updateTask.getTime;
+    if(_bloc.tasks.isNotEmpty && _bloc.updateTaskIndex > -1){
+      updateTask = _bloc.taskForUpdate;
+      _title.text = updateTask.title;
+      _date.text = updateTask.getDate;
+      _time.text = updateTask.getTime;
+    }else{
+      updateTask = const TaskEntity(title: '', timeStamp: -1, createdAt: -1);
+    }
   }
 
   @override
@@ -64,11 +68,13 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
             return Column(
               children: [
                 EditText(
+                  key: Key('titleUpdate'),
                   hint: 'Title',
                   controller: _title,
                   error: error?.title,
                 ),
                 EditText(
+                  key: Key('dateUpdate'),
                   hint: 'Date',
                   controller: _date,
                   readOnly: true,
@@ -81,6 +87,7 @@ class _UpdateTaskViewState extends State<UpdateTaskView> {
                   }),
                 ),
                 EditText(
+                  key: Key('timeUpdate'),
                   hint: 'Time',
                   readOnly: true,
                   controller: _time,

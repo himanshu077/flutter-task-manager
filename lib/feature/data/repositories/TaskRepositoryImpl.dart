@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_task_manager/services/storage/storageServices.dart';
 
 import '../../../core/errors/failure.dart';
 import '../../domain/entities/TaskEntity.dart';
@@ -9,7 +10,7 @@ typedef Future<TaskEntity> _TaskEntityFun();
 typedef Future<List<TaskEntity>> _TaskEntityListFun();
 
 class TaskRepositoryImpl extends TaskRepository {
-  final TaskLocalDataSource _localSource = TaskLocalDataSourceImpl();
+  final TaskLocalDataSource _localSource = TaskLocalDataSourceImpl(storage: StorageService());
 
   @override
   Future<Either<Failure, TaskEntity>> createNewTask(
