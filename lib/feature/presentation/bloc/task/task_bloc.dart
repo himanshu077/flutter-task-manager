@@ -7,6 +7,7 @@ import '../../../../core/utils/appExtension.dart';
 import '../../../../core/useCases/UseCase.dart';
 import '../../../data/repositories/TaskRepositoryImpl.dart';
 import '../../../domain/entities/TaskEntity.dart';
+import '../../../domain/repositories/TaskRepository.dart';
 import '../../../domain/useCases/createNewTask.dart';
 import '../../../domain/useCases/getAllTasks.dart';
 import '../../../domain/useCases/removeTaskUseCase.dart';
@@ -16,7 +17,7 @@ part 'task_event.dart';
 
 part 'task_state.dart';
 
-final repo = TaskRepositoryImpl();
+final TaskRepository repo = TaskRepositoryImpl();
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final GetAllTasksUseCase getAllTaskUseCase = GetAllTasksUseCase(repo);
@@ -34,7 +35,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskEntity get taskForUpdate => tasks[updateTaskIndex];
 
   TaskBloc() : super(TaskInitial()) {
-    on<TaskEvent>((event, emit) {});
+    on<TaskEvent>((event, emit) {
+      tasks = [];
+    });
     on<FetchTasksEvent>(_onFetchTask);
     on<CreateTaskEvent>(_onCreateTask);
     on<UpdateTaskEvent>(_onUpdateTask);
@@ -62,6 +65,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     }
   }
 
+  TaskState getState(){
+    return state;
+  }
+
   FutureOr<void> _onUpdateTask(
       UpdateTaskEvent event, Emitter<TaskState> emit) async {
     emit(UpdateTaskLoadingState());
@@ -71,8 +78,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       result.fold(
           (failure) => emit(UpdateTaskFailureState(error: failure.value)),
           (data) {
-            tasks[updateTaskIndex] = task;
-            _sortTasks();
+            if(tasks.isNotEmpty && updateTaskIndex < tasks.length){
+              tasks[updateTaskIndex] = task;
+              _sortTasks();
+            }
             emit(UpdateTaskSuccessState());
           });
     } else {
@@ -89,7 +98,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final result = await removeTaskUseCase.call(event.data);
     result.fold((failure) => emit(TaskHomeFailureState(error: failure.value)),
         (data) {
-          tasks.removeAt(event.index);
+      if(tasks.isNotEmpty && event.index < tasks.length){
+        tasks.removeAt(event.index);
+      }
       emit(TaskHomeSuccessState());
     });
   }

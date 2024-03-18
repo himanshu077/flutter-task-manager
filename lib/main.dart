@@ -8,7 +8,7 @@ import 'feature/presentation/pages/SplashView.dart';
 import 'services/storage/storageServices.dart';
 
 void main() async{
-  await StorageService.create();
+  await StorageService().create();
   runApp(const MyApp());
 }
 
