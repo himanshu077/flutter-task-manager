@@ -1,29 +1,40 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../feature/data/models/TaskModel.dart';
 
 class StorageService {
-  static late Box<TaskModel> _taskBox;
+  static  Box<TaskModel>? _taskBox;
 
-  static Future create() async {
-    await Hive.initFlutter();
-    Hive.registerAdapter<TaskModel>(TaskModelAdapter());
-    _taskBox = await Hive.openBox<TaskModel>('task');
+  Future? create() async {
+    await _createBox();
     return;
   }
 
-  static Future<int> addTask({required TaskModel data}) async {
+  Future<void> _createBox()async{
+    if(_taskBox == null){
+      WidgetsFlutterBinding.ensureInitialized();
+      await Hive.initFlutter();
+      Hive.registerAdapter<TaskModel>(TaskModelAdapter());
+      _taskBox ??= await Hive.openBox<TaskModel>('task');
+    }
+    return;
+  }
+
+   Future<int?> addTask({required TaskModel data}) async {
     try {
-        return await _taskBox.add(data);
+      await _createBox();
+        return await _taskBox!.add(data);
     } catch (e) {
       rethrow;
     }
   }
 
-  static List<TaskModel> getTaskList() {
+   Future<List<TaskModel>> getTaskList() async{
     try {
-      final list = _taskBox.values.toList();
+      await _createBox();
+      final list = _taskBox!.values.toList();
       list.sort(
               (a, b) => a.timeStamp.compareTo(b.timeStamp),);
       return list;
@@ -32,11 +43,12 @@ class StorageService {
     }
   }
 
-  static Future<void> updateTask({required TaskModel data}) async {
+   Future<void> updateTask({required TaskModel data}) async {
     try {
+      await _createBox();
       final index = await _getKeyByCreatedAt(data.createdAt);
       if(index != null){
-         await _taskBox.putAt(index, data);
+         await _taskBox!.putAt(index, data);
       }
       return;
     } catch (e) {
@@ -44,11 +56,12 @@ class StorageService {
     }
   }
 
-  static Future<void> removeTask({required TaskModel data}) async {
+   Future<void> removeTask({required TaskModel data}) async {
     try {
+      await _createBox();
       final index = await _getKeyByCreatedAt(data.createdAt);
       if(index != null){
-        await _taskBox.deleteAt(index);
+        await _taskBox!.deleteAt(index);
       }
       return;
     } catch (e) {
@@ -56,9 +69,9 @@ class StorageService {
     }
   }
 
-  static Future<int?> _getKeyByCreatedAt(int createdAt) async {
-    for (var i = 0; i < _taskBox.length; i++) {
-      final task = _taskBox.getAt(i);
+   Future<int?> _getKeyByCreatedAt(int createdAt) async {
+    for (var i = 0; i < _taskBox!.length; i++) {
+      final task = _taskBox!.getAt(i);
       if (task != null && task.createdAt == createdAt) {
         return i;
       }

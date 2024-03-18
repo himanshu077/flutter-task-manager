@@ -12,11 +12,14 @@ abstract class TaskLocalDataSource {
 }
 
 class TaskLocalDataSourceImpl extends TaskLocalDataSource {
+  final  StorageService _storage;
+
+  TaskLocalDataSourceImpl({required StorageService storage}) : _storage = storage;
 
   @override
   Future<TaskModel> createNewTask(TaskModel data) async {
     try {
-      final key = await StorageService.addTask(data: data);
+      final key = await _storage.addTask(data: data);
       return data.copyWith(key: key);
     } catch (e) {
       rethrow;
@@ -26,7 +29,7 @@ class TaskLocalDataSourceImpl extends TaskLocalDataSource {
   @override
   Future<List<TaskModel>> getAllTasks() async {
     try {
-      return StorageService.getTaskList();
+      return await _storage.getTaskList();
     } catch (e) {
       rethrow;
     }
@@ -35,7 +38,7 @@ class TaskLocalDataSourceImpl extends TaskLocalDataSource {
   @override
   Future<void> updateTask(TaskModel data) async {
     try {
-      return await StorageService.updateTask(data: data);
+      return await _storage.updateTask(data: data);
     } catch (e) {
       rethrow;
     }
@@ -44,7 +47,7 @@ class TaskLocalDataSourceImpl extends TaskLocalDataSource {
   @override
   Future<bool> removeTask(TaskModel data) async {
     try {
-      await StorageService.removeTask(data: data);
+      await _storage.removeTask(data: data);
       return true;
     } catch (e) {
       rethrow;
