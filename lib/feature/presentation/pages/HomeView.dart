@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_task_manager/components/coreWidgets/TextView.dart';
 
 import '../../../components/constants/AppColors.dart';
+import '../../../components/coreWidgets/TextView.dart';
 import '../../../core/utils/appExtension.dart';
 import '../../../components/constants/AppFonts.dart';
 import '../../../components/constants/AppStrings.dart';

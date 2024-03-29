@@ -45,8 +45,6 @@ class TaskEntity extends Equatable {
   }
 
   TaskEntity copyCreateNew() {
-    final pp = '$date $time';
-    print(pp);
     final int stamp = '$date $time'.timeStamp_from_dd_MMM_yyyy_hhmma;
     return TaskEntity(
       title: title,

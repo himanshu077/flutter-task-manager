@@ -35,9 +35,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskEntity get taskForUpdate => tasks[updateTaskIndex];
 
   TaskBloc() : super(TaskInitial()) {
-    on<TaskEvent>((event, emit) {
-      tasks = [];
-    });
+    on<TaskEvent>((event, emit) {});
     on<FetchTasksEvent>(_onFetchTask);
     on<CreateTaskEvent>(_onCreateTask);
     on<UpdateTaskEvent>(_onUpdateTask);
